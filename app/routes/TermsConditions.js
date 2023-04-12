@@ -1,16 +1,14 @@
 module.exports = app => {
 
-    const AddTermsConditions = require("../controllers/TermsConditions/AddTermsConditions");
-    const DeleteTermsConditions = require("../controllers/TermsConditions/DeleteTermsConditions");
-    const UpdateTermsConditions = require("../controllers/TermsConditions/UpdateTermsConditions");
-    const ViewTermsConditions = require("../controllers/TermsConditions/ViewTermsConditions");
+
+    const TermsConditions = require("../controllers/TermsConditions");
 
     let router = require("express").Router();
 
-    router.post("/add_terms_conditions", AddTermsConditions);
-    router.put("/update_terms_conditions", UpdateTermsConditions);
-    router.delete("/delete_terms_conditions/:id",DeleteTermsConditions );
-    router.get("/specific_terms_conditions", ViewTermsConditions);
+    router.post("/add_terms_conditions", TermsConditions.AddTermsConditions);
+    router.put("/update_terms_conditions", TermsConditions.UpdateTermsConditions);
+    router.delete("/delete_terms_conditions/:id",TermsConditions.DeleteTermsConditions );
+    router.get("/specific_terms_conditions", TermsConditions.ViewTermsConditions);
 
     app.use("/terms_conditions", router);
 };

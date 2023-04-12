@@ -20,7 +20,7 @@ const AddUrl = async (req, res) => {
                     origUrl,
                     shortUrl,
                     urlId,
-                    date: new Date().toString(),x
+                    date: new Date().toString(),
                 });
 
                 await result.save();
