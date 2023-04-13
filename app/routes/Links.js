@@ -1,22 +1,17 @@
 module.exports = app => {
 
-    const AddLink = require("../controllers/Links/AddLink");
-    const DeleteLink = require("../controllers/Links/DeleteLink");
-    const SpecificLink = require("../controllers/Links/SpecificLink");
-    const ViewAllLinks = require("../controllers/Links/ViewAllLinks");
-    const ViewAllLinksUser = require("../controllers/Links/ViewAllLinksUser");
-    const UpdateLink = require("../controllers/Links/UpdateLink");
-    const ViewHiddenLinksUser = require("../controllers/Links/ViewHiddenLinksUser");
+    const Link = require("../controllers/Link");
+
 
     let router = require("express").Router();
 
-    router.post("/add_link", AddLink);
-    router.put("/update_link", UpdateLink);
-    router.delete("/delete_link/:id", DeleteLink);
-    router.get("/specific_link/:id", SpecificLink);
-    router.get("/view_all_links", ViewAllLinks);
-    router.get("/view_all_links_user/:id", ViewAllLinksUser);
-    router.get("/view_hidden_links_user/:id", ViewHiddenLinksUser);
+    router.post("/add_link", Link.AddLink);
+    router.put("/update_link", Link.UpdateLink);
+    router.delete("/delete_link/:id", Link.DeleteLink);
+    router.get("/specific_link/:id", Link.SpecificLink);
+    router.get("/view_all_links", Link.ViewAllLinks);
+    router.get("/view_all_links_user/:id", Link.ViewAllLinksUser);
+    router.get("/view_hidden_links_user/:id", Link.ViewHiddenLinksUser);
 
     app.use("/links", router);
 };
