@@ -297,7 +297,7 @@ QRCode.UpdateQRCode = async (req, res) => {
 QRCode.SpecificQRCode = async (req, res) => {
 	const data = await sql.query(`select * from "qrcode" where id = $1`, [req.params.id]);
 	if (data.rows.length === 1) {
-		sql.query(`DELETE FROM "qrcode" WHERE id = $1;`, [req.params.id], (err, result) => {
+		sql.query(`SELECT FROM "qrcode" WHERE id = $1;`, [req.params.id], (err, result) => {
 			if (err) {
 				res.json({
 					message: "Try Again",
@@ -306,7 +306,7 @@ QRCode.SpecificQRCode = async (req, res) => {
 				});
 			} else {
 				res.json({
-					message: "QRCode Deleted Successfully!",
+					message: "QRCode Data!",
 					status: true,
 					result: data.rows,
 
