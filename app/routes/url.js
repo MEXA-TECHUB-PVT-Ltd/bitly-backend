@@ -6,7 +6,7 @@ module.exports = app => {
     let router = require("express").Router();
 
     router.post("/add_url", URL.AddUrl);
-    router.get("/:urlId", URL.getUrl);
+    router.get("/:id", URL.getUrl);
 
     app.use("", router);
 };

@@ -85,8 +85,9 @@ Url.AddUrl = async (req, res) => {
 }
 
 
-Url.getUrl = async (req, res) => {
-    sql.query(`SELECT * FROM "url" WHERE urlId = $1;`, [req.params.urlId], (err, result) => {
+Url.getUrl =  (req, res) => {
+    sql.query(`select * FROM links WHERE urlId = $1;`,
+     [req.params.id], (err, result) => {
         if (err) {
             console.log(err);
             res.json({
@@ -95,30 +96,29 @@ Url.getUrl = async (req, res) => {
                 err
             });
         } else {
-            if(result){
-            res.redirect(result.link);
-            }else{
-                sql.query(`SELECT * FROM "url" WHERE urlId = $1;`, [req.params.urlId], (err, result) => {
-                    if (err) {
-                        console.log(err);
+            if(result.rows.length > 0){
+                res.redirect(result.rows[0].link);
+            }else if (result.rows.length === 0){
+                sql.query(`select * FROM "qrcode" WHERE urlId = $1;`,
+                [req.params.id], (err, result) => {
+                   if (err) {
+                       console.log(err);
+                       res.json({
+                           message: "Try Again",
+                           status: false,
+                           err
+                       });
+                   } else {
+                       if(result.rows.length > 0){
+                           res.redirect(result.rows[0].link);
+                       }else if (result.rows.length === 0){
                         res.json({
-                            message: "Try Again",
+                            message: "Url Not Found",
                             status: false,
-                            err
                         });
-                    }
-                    else {
-                        if(result){
-                        res.redirect(result.link);
-                        }else{
-                            res.json({
-                                message: "Not Found",
-                                status: false,
-                            });
-                        }
+                       }
                     }
                 })
-
             }
         }
     });
