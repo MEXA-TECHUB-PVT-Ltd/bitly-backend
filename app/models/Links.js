@@ -170,12 +170,16 @@ Links.UpdateLink = async (req, res) => {
 		}
 		if (shortenLink === undefined || shortenLink === '') {
 			urlId = oldUrlId;
+		}else {
+			urlId = shortenLink
 		}
 		if (link === undefined || link === '') {
 			link = oldlink;
 		}
 		if (shortenLink === undefined || shortenLink === '') {
 			shortenLink = oldshortenLink;
+		}else {
+			shortenLink = `http://localhost:8082/${shortenLink}`
 		}
 		if (status === undefined || status === '') {
 			status = oldStatus;
