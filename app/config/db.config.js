@@ -1,16 +1,4 @@
-// module.exports = {
-//   HOST: "localhost",
-//   USER: "postgres",
-//   PASSWORD: "1234",
-//   DB: "Bitly",
-//   dialect: "postgres",
-//   pool: {
-//     max: 5,
-//     min: 0,
-//     acquire: 30000,
-//     idle: 10000
-//   }
-// };
+
 
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -19,12 +7,12 @@ const path = require('path');
 
 
 const sql = new Pool ({
-  host: "localhost",
-  port:'5432',
-  user: "postgres", 
-  password: "1234",
-  database: "Bitly_SQL"
-  //    max : process.env.MAX
+  host:'postgres-node-staging-projects.mtechub.com', 
+  port :5432 ,
+  user :'bitlyuser' ,
+  password :'mtechub123',
+  database :  'bitly',
+  max : 10
 });
 
 
