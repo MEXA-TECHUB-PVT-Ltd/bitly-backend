@@ -32,7 +32,7 @@
 // 		status: {
 // 			type: Sequelize.STRING,
 
-const {sql} = require("../config/db.config");
+const { sql } = require("../config/db.config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");;
@@ -53,7 +53,7 @@ const transporter = nodemailer.createTransport({
 
 const sendOTPVerificationEmail = async (email, res) => {
     try {
-        if (!email ||email  === '') {
+        if (!email || email === '') {
             res.json({
                 message: "Please Enter your Email",
                 status: false,
@@ -97,10 +97,10 @@ const sendOTPVerificationEmail = async (email, res) => {
                     }
 
                     let sendEmailResponse = await transporter.sendMail({
-                        from: process.env.EMAIL_USERNAME,
+                        from: 'verification@bitly.com',
                         to: email,
                         subject: 'Verify Account',
-                        html: emailOTPBody(otp, "Super Machine Art", "#746C70")
+                        html: emailOTPBody(otp, "Bitly", "#746C70")
 
                     });
 
@@ -133,7 +133,7 @@ const sendOTPVerificationEmail = async (email, res) => {
 }
 
 
-otp.VerifyEmail  = async (req, res) => {
+otp.VerifyEmail = async (req, res) => {
     try {
         const email = req.body.email;
         const found_email_query = 'SELECT * FROM "user"  WHERE email = $1'
@@ -142,17 +142,10 @@ otp.VerifyEmail  = async (req, res) => {
             sendOTPVerificationEmail(foundResult.rows[0].email, res)
         }
         else {
-            const found_email_query = 'SELECT * FROM public.admins WHERE email = $1'
-            const foundResult = await sql.query(found_email_query, [email])
-            if (foundResult) {
-                sendOTPVerificationEmail(foundEmail.rows[0].email, res)
-            }
-            else {
-                res.json({
-                    message: "This email is not Registered with this app , please add valid email",
-                    status: false
-                })
-            }
+            res.json({
+                message: "This email is not Registered with this app , please add valid email",
+                status: false
+            })
         }
     }
     catch (err) {
@@ -164,13 +157,13 @@ otp.VerifyEmail  = async (req, res) => {
     }
 }
 
-otp.verifyOTP = async (req,res)=>{
-    try{
+otp.verifyOTP = async (req, res) => {
+    try {
         const email = req.body.email;
         const otp = req.body.otp;
         const found_email_query = 'SELECT * FROM otp WHERE email = $1 AND otp = $2'
-        const result = await sql.query(found_email_query, [email , otp])
-        if(result.rowCount>0){
+        const result = await sql.query(found_email_query, [email, otp])
+        if (result.rowCount > 0) {
             let query = 'UPDATE otp SET status = $1  WHERE email = $2 RETURNING*'
             let values = [
                 'verified',
@@ -185,19 +178,19 @@ otp.verifyOTP = async (req,res)=>{
                 result: result.rows[0]
             })
         }
-        else{
+        else {
             res.json({
-                message : "Incorrect OTP",
-                status:false
+                message: "Incorrect OTP",
+                status: false
             })
         }
     }
-    catch(err){
+    catch (err) {
         console.log(err)
         res.status(500).json({
-          message: `Internal server error occurred`,
-          success:false,
+            message: `Internal server error occurred`,
+            success: false,
         });
-      }
+    }
 }
 module.exports = otp;

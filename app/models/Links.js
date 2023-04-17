@@ -147,6 +147,7 @@ Links.ViewAllLinks = (req, res) => {
 }
 
 Links.UpdateLink = async (req, res) => {
+	console.log(req.body.linkID);
 	if (req.body.linkID === '') {
 		res.json({
 			message: "linkID is required",
@@ -169,12 +170,16 @@ Links.UpdateLink = async (req, res) => {
 		}
 		if (shortenLink === undefined || shortenLink === '') {
 			urlId = oldUrlId;
+		}else {
+			urlId = shortenLink
 		}
 		if (link === undefined || link === '') {
 			link = oldlink;
 		}
 		if (shortenLink === undefined || shortenLink === '') {
 			shortenLink = oldshortenLink;
+		}else {
+			shortenLink = `http://localhost:8082/${shortenLink}`
 		}
 		if (status === undefined || status === '') {
 			status = oldStatus;
@@ -207,7 +212,7 @@ Links.UpdateLink = async (req, res) => {
 			});
 		}else{
 			res.json({
-				message: "Please Enter valid link",
+				message: "Link Not Found",
                 status: false,
 			});
 		}
@@ -218,7 +223,7 @@ Links.UpdateLink = async (req, res) => {
 Links.SpecificLink = async (req, res) => {
 	const data = await sql.query(`select * from "links" where id = $1`, [req.params.id]);
 	if (data.rows.length === 1) {
-		sql.query(`DELETE FROM "links" WHERE id = $1;`, [req.params.id], (err, result) => {
+		sql.query(`SELECT FROM "links" WHERE id = $1;`, [req.params.id], (err, result) => {
 			if (err) {
 				res.json({
 					message: "Try Again",
@@ -227,7 +232,7 @@ Links.SpecificLink = async (req, res) => {
 				});
 			} else {
 				res.json({
-					message: "Links Deleted Successfully!",
+					message: "Link Data !",
 					status: true,
 					result: data.rows,
 

@@ -54,7 +54,7 @@ User.create = async (req, res) => {
 					const salt = await bcrypt.genSalt(10);
 					let hashpassword = await bcrypt.hash(req.body.password, salt);
 					const { username, email, accountType} = req.body;
-					const query = `INSERT INTO "user" (id,username,email,password ,accountType , createdAt ,updatedAt )
+					const query = `INSERT INTO "user" (id,username,email,password ,accounttype , createdat ,updatedat )
                             VALUES (DEFAULT, $1, $2, $3, $4 , 'NOW()','NOW()' ) RETURNING * `;
 					const foundResult = await sql.query(query,
 						[username, email, hashpassword, accountType]);
@@ -132,7 +132,7 @@ User.login = async function (req, res) {
 
 
 User.SpecificUser = (req, res) => {
-	sql.query(`SELECT * FROM User WHERE ( id = $1)`, [req.body.id], (err, result) => {
+	sql.query(`SELECT * FROM "user" WHERE  id = $1`, [req.params.id], (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
@@ -283,32 +283,6 @@ User.AllUsers = (req, res) => {
 // }
 
 
-User.SpecificUser = async (req, res) => {
-	const data = await sql.query(`select * from "user" where id = $1`, [req.params.id]);
-	if (data.rows.length === 1) {
-		sql.query(`DELETE FROM "user" WHERE id = $1;`, [req.params.id], (err, result) => {
-			if (err) {
-				res.json({
-					message: "Try Again",
-					status: false,
-					err
-				});
-			} else {
-				res.json({
-					message: "User Deleted Successfully!",
-					status: true,
-					result: data.rows,
-
-				});
-			}
-		});
-	} else {
-		res.json({
-			message: "Not Found",
-			status: false,
-		});
-	}
-}
 
 User.newPassword = async (req, res) => {
 	try {
