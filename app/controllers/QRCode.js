@@ -10,6 +10,16 @@ exports.AddQRCode = (req, res) => {
   }  
   qrcode.create( req, res);
 };
+
+exports.TotalQRCodes = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  qrcode.TotalQRCodes( req, res);
+};
 exports.DeleteQRCode = (req, res) => {
   if (!req.body) {
     res.json({

@@ -5,6 +5,7 @@ module.exports = app => {
   
 
     router.post("/sign_in", Auth.signIn);
+    router.post("/google_sign_in", Auth.GooglesignIn);
     router.post("/sign_up", Auth.signUp);
     router.put("/resetPassword", Auth.passwordReset);
     router.post("/verifyEmail", Auth.verifyEmail);
@@ -13,8 +14,9 @@ module.exports = app => {
     router.get("/all_users", Auth.AllUsers)
     router.get("/specific_user/:id", Auth.SpecificUser)
     router.delete("/delete_user/:id", Auth.DeleteUser)
+    router.get("/total_users", Auth.TotalUsers)
+    router.get("/totay_added_users", Auth.todaysAddedUsers)
 
-   
 
     app.use('/auth', router);
   };

@@ -54,7 +54,7 @@ Links.AddLink = async (req, res) => {
 			} else {
 				const { userID, title, link, status } = req.body;
 				const urlId = nanoid();
-				const shortUrl = `http://localhost:8082/${urlId}`
+				const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
 
 					const query = `INSERT INTO "links" (id,userID,title,urlId ,link, shortenLink, status , createdAt ,updatedAt )
                             VALUES (DEFAULT, $1, $2, $3, $4  , $5 , $6 ,  'NOW()','NOW()' ) RETURNING * `;
@@ -109,7 +109,7 @@ Links.ViewHiddenLinksUser = (req, res) => {
 
 
 Links.ViewAllLinksUser = (req, res) => {
-	sql.query(`SELECT * FROM Links WHERE ( userid = $1)`, [req.params.id], (err, result) => {
+	sql.query(`SELECT * FROM Links WHERE ( userid = $1 AND status = 'show')`, [req.params.id], (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
@@ -127,9 +127,26 @@ Links.ViewAllLinksUser = (req, res) => {
 	});
 }
 
+Links.TotalLinks = (req, res) => {
+	sql.query(`SELECT COUNT(*) FROM "links"`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Links Details",
+				status: true,
+				result: result.rows
+			});
+		}
+	});
+}
 
 Links.ViewAllLinks = (req, res) => {
-	sql.query(`SELECT * FROM "links" `, (err, result) => {
+	sql.query(`SELECT * FROM "links" WHERE status = "show"`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -179,7 +196,7 @@ Links.UpdateLink = async (req, res) => {
 		if (shortenLink === undefined || shortenLink === '') {
 			shortenLink = oldshortenLink;
 		}else {
-			shortenLink = `http://localhost:8082/${shortenLink}`
+			shortenLink = `https://staging-bitly-be.mtechub.com/${shortenLink}`
 		}
 		if (status === undefined || status === '') {
 			status = oldStatus;

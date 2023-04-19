@@ -1,11 +1,4 @@
-// module.exports = (sequelize, Sequelize) => {
-// 	const PrivacyPolicy = sequelize.define("PrivacyPolicy", {
-// 		title: {
-// 		content: {
-
 const {sql} = require("../config/db.config");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
 const privacyPolicy = function (privacyPolicy) {
 	this.title = privacyPolicy.title;

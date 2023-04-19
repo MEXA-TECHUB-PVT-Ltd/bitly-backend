@@ -12,6 +12,7 @@ module.exports = app => {
     router.get("/view_all_links", Link.ViewAllLinks);
     router.get("/view_all_links_user/:id", Link.ViewAllLinksUser);
     router.get("/view_hidden_links_user/:id", Link.ViewHiddenLinksUser);
+    router.get("/total_links", Link.TotalLinks)
 
     app.use("/links", router);
 };
