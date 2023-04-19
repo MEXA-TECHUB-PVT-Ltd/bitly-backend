@@ -12,6 +12,7 @@ module.exports = app => {
     router.get("/view_all_qr_code", QRCode.ViewAllQRCodes);
     router.get("/view_all_qr_code_user/:id", QRCode.ViewAllQRCodesUser);
     router.get("/view_hidden_qr_code_user/:id",QRCode.ViewHiddenQRCodesUser);
+    router.get("/total_qrcodes", QRCode.TotalQRCodes);
 
     app.use("/qr_code", router);
 };

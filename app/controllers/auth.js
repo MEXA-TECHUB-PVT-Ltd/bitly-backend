@@ -20,6 +20,25 @@ exports.signIn = (req, res) => {
   }  
   user.login( req, res);
 };
+exports.GooglesignIn = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.GooglesignIn( req, res);
+};
+exports.todaysAddedUsers = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.todaysAddedUsers( req, res);
+};
+
 
 exports.passwordReset = (req, res) => {
   if (!req.body) {
@@ -48,6 +67,19 @@ exports.newPassword = (req, res) => {
   }  
   user.newPassword( req, res);
 };
+
+
+exports.TotalUsers = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.TotalUsers( req, res);
+};
+
+
 exports.verifyOTP = (req, res) => {
   if (!req.body) {
     res.json({

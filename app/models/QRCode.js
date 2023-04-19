@@ -57,7 +57,7 @@ QRCode.create = async (req, res) => {
 			} else {
 				const { userID, title, link, color, status } = req.body;
 				const urlId = nanoid();
-				const shortUrl = `http://localhost:8082/${urlId}`
+				const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
 
 				const query = `INSERT INTO "qrcode" (id,userID,title,urlId ,link, shortenLink,color , status , createdAt ,updatedAt )
 								VALUES (DEFAULT, $1, $2, $3, $4  , $5 , $6 , $7,   'NOW()','NOW()' ) RETURNING * `;
@@ -112,9 +112,27 @@ QRCode.ViewHiddenQRCodesUser = (req, res) => {
 
 
 QRCode.ViewAllQRCodesUser = (req, res) => {
-	sql.query(`SELECT * FROM QRCode WHERE ( userid = $1)`, [req.params.id], (err, result) => {
+	sql.query(`SELECT * FROM QRCode WHERE ( userid = $1 AND status = 'show')`, [req.params.id], (err, result) => {
 		if (err) {
 			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "QRCode Details",
+				status: true,
+				result: result.rows
+			});
+		}
+	});
+}
+
+QRCode.TotalQRCodes = (req, res) => {
+	sql.query(`SELECT COUNT(*) FROM "qrcode" `, (err, result) => {
+		if (err) {
 			res.json({
 				message: "Try Again",
 				status: false,
@@ -255,7 +273,7 @@ QRCode.UpdateQRCode = async (req, res) => {
 		if (shortenLink === undefined || shortenLink === '') {
 			shortenLink = oldshortenLink;
 		}else {
-			shortenLink = `http://localhost:8082/${shortenLink}`
+			shortenLink = `https://staging-bitly-be.mtechub.com/${shortenLink}`
 		}
 		if (color === undefined || color === '') {
 			color = oldColor;

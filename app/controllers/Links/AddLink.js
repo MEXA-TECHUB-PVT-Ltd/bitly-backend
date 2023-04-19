@@ -15,7 +15,7 @@ const AddLink = async (req, res) => {
                     status: false,
                 })
             }
-            const shortUrl = `http://localhost:8082/${urlId}`
+            const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
             const links = {
                 userID: userID,
                 title: title,

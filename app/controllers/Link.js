@@ -19,7 +19,15 @@ exports.UpdateLink = (req, res) => {
   }  
   links.UpdateLink( req, res);
 };
-
+exports.TotalLinks = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  links.TotalLinks( req, res);
+};
 exports.DeleteLink = (req, res) => {
   if (!req.body) {
     res.json({
