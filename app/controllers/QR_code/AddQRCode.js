@@ -14,7 +14,7 @@ const AddQRCode = async (req, res) => {
                 status: false,
             })
         }
-        const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
+        const shortUrl = `http://localhost:8082/${urlId}`
         const links = {
             userID:userID,
 			title:title,
