@@ -44,12 +44,7 @@ QRCode.create = async (req, res) => {
 				err
 			});
 		} else {
-			if (!req.body.title || req.body.title === '') {
-				res.json({
-					message: "Please Enter your title",
-					status: false,
-				});
-			} else if (!req.body.link) {
+			if (!req.body.link) {
 				res.json({
 					message: "Please Enter link",
 					status: false,
@@ -57,7 +52,7 @@ QRCode.create = async (req, res) => {
 			} else {
 				const { userID, title, link, color, status } = req.body;
 				const urlId = nanoid();
-				const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
+				const shortUrl = `http://localhost:8082/${urlId}`
 
 				const query = `INSERT INTO "qrcode" (id,userID,title,urlId ,link, shortenLink,color , status , createdAt ,updatedAt )
 								VALUES (DEFAULT, $1, $2, $3, $4  , $5 , $6 , $7,   'NOW()','NOW()' ) RETURNING * `;
@@ -248,69 +243,69 @@ QRCode.UpdateQRCode = async (req, res) => {
 	} else {
 		const userData = await sql.query(`select * from "qrcode" where id = $1`, [req.body.linkID]);
 		console.log(userData.rows);
-		if(userData.rows.length > 0) {
-		const oldTitle = userData.rows[0].title;
-		const oldUrlId = userData.rows[0].urlId;
-		const oldlink = userData.rows[0].link;
-		const oldColor = userData.rows[0].color;
-		const oldshortenLink = userData.rows[0].shortenLink;
-		const oldStatus = userData.rows[0].status;
-		const oldUserID = userData.rows[0].userid;
+		if (userData.rows.length > 0) {
+			const oldTitle = userData.rows[0].title;
+			const oldUrlId = userData.rows[0].urlId;
+			const oldlink = userData.rows[0].link;
+			const oldColor = userData.rows[0].color;
+			const oldshortenLink = userData.rows[0].shortenLink;
+			const oldStatus = userData.rows[0].status;
+			const oldUserID = userData.rows[0].userid;
 			let urlId;
-		let { linkID, title, link, shortenLink, color,status } = req.body;
-		if (title === undefined || title === '') {
-			title = oldTitle;
-		}
-		if (shortenLink === undefined || shortenLink === '') {
-			urlId = oldUrlId;
-		}else {
-			urlId = shortenLink
-		}
+			let { linkID, title, link, shortenLink, color, status } = req.body;
+			if (title === undefined || title === '') {
+				title = oldTitle;
+			}
+			if (shortenLink === undefined || shortenLink === '') {
+				urlId = oldUrlId;
+			} else {
+				urlId = shortenLink
+			}
 
-		if (link === undefined || link === '') {
-			link = oldlink;
-		}
-		if (shortenLink === undefined || shortenLink === '') {
-			shortenLink = oldshortenLink;
-		}else {
-			shortenLink = `https://staging-bitly-be.mtechub.com/${shortenLink}`
-		}
-		if (color === undefined || color === '') {
-			color = oldColor;
-		}
-		if (status === undefined || status === '') {
-			status = oldStatus;
-		}
+			if (link === undefined || link === '') {
+				link = oldlink;
+			}
+			if (shortenLink === undefined || shortenLink === '') {
+				shortenLink = oldshortenLink;
+			} else {
+				shortenLink = `http://localhost:8082/${shortenLink}`
+			}
+			if (color === undefined || color === '') {
+				color = oldColor;
+			}
+			if (status === undefined || status === '') {
+				status = oldStatus;
+			}
 
-		sql.query(`UPDATE "qrcode" SET userID = $1, title = $2, 
+			sql.query(`UPDATE "qrcode" SET userID = $1, title = $2, 
 		urlId = $3, link = $4, shortenLink = $5, color=$6, status = $7  WHERE id = $8;`,
-			[oldUserID, title, urlId, link,shortenLink,color,status, linkID], async (err, result) => {
-				if (err) {
-					res.json({
-						message: "Try Again",
-						status: false,
-						err
-					});
-				} else {
-					if (result.rowCount === 1) {
-						const data = await sql.query(`select * from "qrcode" where id = $1`, [req.body.linkID]);
+				[oldUserID, title, urlId, link, shortenLink, color, status, linkID], async (err, result) => {
+					if (err) {
 						res.json({
-							message: "qr code Updated Successfully!",
-							status: true,
-							result: data.rows,
-						});
-					} else if (result.rowCount === 0) {
-						res.json({
-							message: "Not Found",
+							message: "Try Again",
 							status: false,
+							err
 						});
+					} else {
+						if (result.rowCount === 1) {
+							const data = await sql.query(`select * from "qrcode" where id = $1`, [req.body.linkID]);
+							res.json({
+								message: "qr code Updated Successfully!",
+								status: true,
+								result: data.rows,
+							});
+						} else if (result.rowCount === 0) {
+							res.json({
+								message: "Not Found",
+								status: false,
+							});
+						}
 					}
-				}
-			});
-		}else{
+				});
+		} else {
 			res.json({
-				message: "Please Enter valid qr code ",
-                status: false,
+				message: "qr code link  Not Found",
+				status: false,
 			});
 		}
 	}

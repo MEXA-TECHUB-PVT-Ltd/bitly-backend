@@ -49,7 +49,7 @@ Url.AddUrl = async (req, res) => {
                 const urlId = nanoid();
 
                 if (validateUrl(origUrl)) {
-                    const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
+                    const shortUrl = `http://localhost:8082/${urlId}`
 
                     const query = `INSERT INTO "url" (id,urlId,origUrl,shortUrl ,clicks, date , createdAt ,updatedAt )
                             VALUES (DEFAULT, $1, $2, $3, $4  , 'NOW()' ,  'NOW()','NOW()' ) RETURNING * `;

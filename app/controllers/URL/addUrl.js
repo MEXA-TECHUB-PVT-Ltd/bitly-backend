@@ -15,7 +15,7 @@ const AddUrl = async (req, res) => {
 
     if (validateUrl(origUrl)) {
         try {
-                const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
+                const shortUrl = `http://localhost:8082/${urlId}`
                 const result = new Url({
                     origUrl,
                     shortUrl,

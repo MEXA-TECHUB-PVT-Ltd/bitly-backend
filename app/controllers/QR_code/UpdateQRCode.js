@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 const UpdateQRCode = async (req, res) => {
     try {
         const { linkID, title, link, shortenLink , color,status} = req.body;
-        const shortUrl = `https://staging-bitly-be.mtechub.com/${shortenLink}`
+        const shortUrl = `http://localhost:8082/${shortenLink}`
             const results = await QRCODE.update(
                 {
                     title: title,

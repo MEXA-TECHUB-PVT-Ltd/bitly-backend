@@ -41,12 +41,7 @@ Links.AddLink = async (req, res) => {
 				err
 			});
 		} else {
-			if (!req.body.title || req.body.title === '') {
-				res.json({
-					message: "Please Enter your title",
-					status: false,
-				});
-			} else if (!req.body.link) {
+			if (!req.body.link) {
 				res.json({
 					message: "Please Enter link",
 					status: false,
@@ -54,34 +49,34 @@ Links.AddLink = async (req, res) => {
 			} else {
 				const { userID, title, link, status } = req.body;
 				const urlId = nanoid();
-				const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
+				const shortUrl = `http://localhost:8082/${urlId}`
 
-					const query = `INSERT INTO "links" (id,userID,title,urlId ,link, shortenLink, status , createdAt ,updatedAt )
+				const query = `INSERT INTO "links" (id,userID,title,urlId ,link, shortenLink, status , createdAt ,updatedAt )
                             VALUES (DEFAULT, $1, $2, $3, $4  , $5 , $6 ,  'NOW()','NOW()' ) RETURNING * `;
-					const foundResult = await sql.query(query,
-						[userID, title, urlId, link,shortUrl,status]);
-					if (foundResult.rows.length > 0) {
-						if (err) {
-							res.json({
-								message: "Try Again",
-								status: false,
-								err
-							});
-						}
-						else {
-							res.json({
-								message: "Links Added Successfully!",
-								status: true,
-								result: foundResult.rows,
-							});
-						}
-					} else {
+				const foundResult = await sql.query(query,
+					[userID, title, urlId, link, shortUrl, status]);
+				if (foundResult.rows.length > 0) {
+					if (err) {
 						res.json({
 							message: "Try Again",
 							status: false,
 							err
 						});
 					}
+					else {
+						res.json({
+							message: "Links Added Successfully!",
+							status: true,
+							result: foundResult.rows,
+						});
+					}
+				} else {
+					res.json({
+						message: "Try Again",
+						status: false,
+						err
+					});
+				}
 			}
 		}
 	});
@@ -173,64 +168,64 @@ Links.UpdateLink = async (req, res) => {
 	} else {
 		const userData = await sql.query(`select * from "links" where id = $1`, [req.body.linkID]);
 		console.log(userData.rows);
-		if(userData.rows.length > 0) {
-		const oldTitle = userData.rows[0].title;
-		const oldUrlId = userData.rows[0].urlId;
-		const oldlink = userData.rows[0].link;
-		const oldshortenLink = userData.rows[0].shortenLink;
-		const oldStatus = userData.rows[0].status;
-		const oldUserID = userData.rows[0].userid;
+		if (userData.rows.length > 0) {
+			const oldTitle = userData.rows[0].title;
+			const oldUrlId = userData.rows[0].urlId;
+			const oldlink = userData.rows[0].link;
+			const oldshortenLink = userData.rows[0].shortenLink;
+			const oldStatus = userData.rows[0].status;
+			const oldUserID = userData.rows[0].userid;
 			let urlId;
-		let { linkID, title, link, shortenLink, status } = req.body;
-		if (title === undefined || title === '') {
-			title = oldTitle;
-		}
-		if (shortenLink === undefined || shortenLink === '') {
-			urlId = oldUrlId;
-		}else {
-			urlId = shortenLink
-		}
-		if (link === undefined || link === '') {
-			link = oldlink;
-		}
-		if (shortenLink === undefined || shortenLink === '') {
-			shortenLink = oldshortenLink;
-		}else {
-			shortenLink = `https://staging-bitly-be.mtechub.com/${shortenLink}`
-		}
-		if (status === undefined || status === '') {
-			status = oldStatus;
-		}
+			let { linkID, title, link, shortenLink, status } = req.body;
+			if (title === undefined || title === '') {
+				title = oldTitle;
+			}
+			if (shortenLink === undefined || shortenLink === '') {
+				urlId = oldUrlId;
+			} else {
+				urlId = shortenLink
+			}
+			if (link === undefined || link === '') {
+				link = oldlink;
+			}
+			if (shortenLink === undefined || shortenLink === '') {
+				shortenLink = oldshortenLink;
+			} else {
+				shortenLink = `http://localhost:8082/${shortenLink}`
+			}
+			if (status === undefined || status === '') {
+				status = oldStatus;
+			}
 
-		sql.query(`UPDATE "links" SET userID = $1, title = $2, 
+			sql.query(`UPDATE "links" SET userID = $1, title = $2, 
 		urlId = $3, link = $4, shortenLink = $5, status = $6  WHERE id = $7;`,
-			[oldUserID, title, urlId, link,shortenLink,status, linkID], async (err, result) => {
-				if (err) {
-					res.json({
-						message: "Try Again",
-						status: false,
-						err
-					});
-				} else {
-					if (result.rowCount === 1) {
-						const data = await sql.query(`select * from "links" where id = $1`, [req.body.linkID]);
+				[oldUserID, title, urlId, link, shortenLink, status, linkID], async (err, result) => {
+					if (err) {
 						res.json({
-							message: "Links Updated Successfully!",
-							status: true,
-							result: data.rows,
-						});
-					} else if (result.rowCount === 0) {
-						res.json({
-							message: "Not Found",
+							message: "Try Again",
 							status: false,
+							err
 						});
+					} else {
+						if (result.rowCount === 1) {
+							const data = await sql.query(`select * from "links" where id = $1`, [req.body.linkID]);
+							res.json({
+								message: "Links Updated Successfully!",
+								status: true,
+								result: data.rows,
+							});
+						} else if (result.rowCount === 0) {
+							res.json({
+								message: "Not Found",
+								status: false,
+							});
+						}
 					}
-				}
-			});
-		}else{
+				});
+		} else {
 			res.json({
 				message: "Link Not Found",
-                status: false,
+				status: false,
 			});
 		}
 	}
@@ -266,30 +261,30 @@ Links.SpecificLink = async (req, res) => {
 
 
 Links.DeleteLink = async (req, res) => {
-    const data = await sql.query(`select * from public."links" where id = $1`, [req.params.id]);
-    if (data.rows.length === 1) {
-        sql.query(`DELETE FROM public."links" WHERE id = $1;`,[req.params.id], (err, result) => {
-            if (err) {
-                res.json({
-                    message: "Try Again",
-                    status: false,
-                    err
-                });
-            } else {
-                res.json({
-                    message: " Links Deleted Successfully!",
-                    status: true,
-                    result: data.rows,
+	const data = await sql.query(`select * from public."links" where id = $1`, [req.params.id]);
+	if (data.rows.length === 1) {
+		sql.query(`DELETE FROM public."links" WHERE id = $1;`, [req.params.id], (err, result) => {
+			if (err) {
+				res.json({
+					message: "Try Again",
+					status: false,
+					err
+				});
+			} else {
+				res.json({
+					message: " Links Deleted Successfully!",
+					status: true,
+					result: data.rows,
 
-                });
-            }
-        });
-    } else {
-        res.json({
-            message: "Not Found",
-            status: false,
-        });
-    }
+				});
+			}
+		});
+	} else {
+		res.json({
+			message: "Not Found",
+			status: false,
+		});
+	}
 }
 
 
