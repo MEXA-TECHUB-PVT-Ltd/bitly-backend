@@ -1,13 +1,4 @@
-// module.exports = (sequelize, Sequelize) => {
-// 	const Links = sequelize.define("links", {
-// 		userID: {
-// 			type: Sequelize.INTEGER,
-// 		title: {
-// 			type: Sequelize.TEXT,
-// 		urlId: {
-// 		link: {
-// 		shortenLink: {
-// 		status: {
+
 const { sql } = require("../config/db.config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -49,7 +40,7 @@ Links.AddLink = async (req, res) => {
 			} else {
 				const { userID, title, link, status } = req.body;
 				const urlId = nanoid();
-				const shortUrl = `http://localhost:8082/${urlId}`
+				const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
 
 				const query = `INSERT INTO "links" (id,userID,title,urlId ,link, shortenLink, status , createdAt ,updatedAt )
                             VALUES (DEFAULT, $1, $2, $3, $4  , $5 , $6 ,  'NOW()','NOW()' ) RETURNING * `;
@@ -191,7 +182,7 @@ Links.UpdateLink = async (req, res) => {
 			if (shortenLink === undefined || shortenLink === '') {
 				shortenLink = oldshortenLink;
 			} else {
-				shortenLink = `http://localhost:8082/${shortenLink}`
+				shortenLink = `https://staging-bitly-be.mtechub.com/${shortenLink}`
 			}
 			if (status === undefined || status === '') {
 				status = oldStatus;
