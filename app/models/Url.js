@@ -1,3 +1,10 @@
+// module.exports = (sequelize, Sequelize) => {
+//     const Url = sequelize.define("url", {
+//         urlId: {
+//         origUrl: {
+//         shortUrl: {
+//         clicks: {
+//         date: {
 
 
 const { sql } = require("../config/db.config");
