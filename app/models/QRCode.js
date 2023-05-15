@@ -1,16 +1,4 @@
-// module.exports = (sequelize, Sequelize) => {
-// 	const QR_code = sequelize.define("QR_code", {
-// 		userID: {
-// 		title: {
-// 		urlId: {
-// 		link: {
-// 		shortenLink: {
-// 		color: {
-// 		status: {
 
-
-// module.exports = (sequelize, Sequelize) => {
-// 	const QRCode = sequelize.define("qrcode", {
 const { sql } = require("../config/db.config");
 const { nanoid } = require('nanoid');
 const validateUrl = require('../utils/utils');
@@ -51,35 +39,43 @@ QRCode.create = async (req, res) => {
 				});
 			} else {
 				const { userID, title, link, color, status } = req.body;
-				const urlId = nanoid();
-				const shortUrl = `http://localhost:8082/${urlId}`
+				if (validateUrl(link)) {
+					const urlId = nanoid();
+					const shortUrl = `https://staging-bitly-be.mtechub.com/${urlId}`
 
-				const query = `INSERT INTO "qrcode" (id,userID,title,urlId ,link, shortenLink,color , status , createdAt ,updatedAt )
+					const query = `INSERT INTO "qrcode" (id,userID,title,urlId ,link, shortenLink,color , status , createdAt ,updatedAt )
 								VALUES (DEFAULT, $1, $2, $3, $4  , $5 , $6 , $7,   'NOW()','NOW()' ) RETURNING * `;
-				const foundResult = await sql.query(query,
-					[userID, title, urlId, link, shortUrl, color, status]);
-				if (foundResult.rows.length > 0) {
-					if (err) {
+					const foundResult = await sql.query(query,
+						[userID, title, urlId, link, shortUrl, color, status]);
+					if (foundResult.rows.length > 0) {
+						if (err) {
+							res.json({
+								message: "Try Again",
+								status: false,
+								err
+							});
+						}
+						else {
+							res.json({
+								message: "QRCode Added Successfully!",
+								status: true,
+								result: foundResult.rows,
+							});
+						}
+					} else {
 						res.json({
 							message: "Try Again",
 							status: false,
 							err
 						});
 					}
-					else {
-						res.json({
-							message: "QRCode Added Successfully!",
-							status: true,
-							result: foundResult.rows,
-						});
-					}
 				} else {
 					res.json({
-						message: "Try Again",
+						message: "Enter Valid URL",
 						status: false,
-						err
 					});
 				}
+
 			}
 		}
 	});
@@ -88,7 +84,8 @@ QRCode.create = async (req, res) => {
 
 
 QRCode.ViewHiddenQRCodesUser = (req, res) => {
-	sql.query(`SELECT * FROM "qrcode" WHERE status = $1 AND userid = $2`, ['hide', req.params.id], (err, result) => {
+	sql.query(`SELECT * FROM "qrcode" WHERE status = $1 AND userid = $2 
+	ORDER BY createdat DESC`, ['hide', req.params.id], (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -107,7 +104,8 @@ QRCode.ViewHiddenQRCodesUser = (req, res) => {
 
 
 QRCode.ViewAllQRCodesUser = (req, res) => {
-	sql.query(`SELECT * FROM QRCode WHERE ( userid = $1 AND status = 'show')`, [req.params.id], (err, result) => {
+	sql.query(`SELECT * FROM QRCode WHERE ( userid = $1 AND status = 'show')
+	 ORDER BY createdat DESC`, [req.params.id], (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
@@ -145,7 +143,7 @@ QRCode.TotalQRCodes = (req, res) => {
 
 
 QRCode.ViewAllQRCodes = (req, res) => {
-	sql.query(`SELECT * FROM "qrcode" `, (err, result) => {
+	sql.query(`SELECT * FROM "qrcode" ORDER BY createdat DESC `, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -268,7 +266,7 @@ QRCode.UpdateQRCode = async (req, res) => {
 			if (shortenLink === undefined || shortenLink === '') {
 				shortenLink = oldshortenLink;
 			} else {
-				shortenLink = `http://localhost:8082/${shortenLink}`
+				shortenLink = `https://staging-bitly-be.mtechub.com/${shortenLink}`
 			}
 			if (color === undefined || color === '') {
 				color = oldColor;
